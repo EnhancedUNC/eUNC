@@ -70,30 +70,45 @@ Planned testing categories include:
 ## Example Output
 
 ```text
-[eUNC] Enhanced UNC Benchmark
+███████╗██╗   ██╗███╗   ██╗ ██████╗
+██╔════╝██║   ██║████╗  ██║██╔════╝
+█████╗  ██║   ██║██╔██╗ ██║██║     
+██╔══╝  ██║   ██║██║╚██╗██║██║     
+███████╗╚██████╔╝██║ ╚████║╚██████╗
+╚══════╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝
 
-Executor: ExampleExecutor
+         Enhanced UNC
+      "No spoof, just proof."
 
-✅ crypt.base64.encode
-✅ crypt.base64.decode
-✅ hookmetamethod
-❌ filesystem.readfile
-⏺️ debug.getconstant
+────────────────────────────────────────
 
---------------------------------
-eUNC Results
---------------------------------
+  ✅ crypt.base64.decode
+  ✅ crypt.base64.encode
+  ✅ crypt.hash
+  ✅ debug.getinfo
+  ✅ getrawmetatable
+  ✅ hookfunction
+  ✅ newcclosure
+  ✅ readfile
+  ✅ setreadonly
+  ✅ writefile
+  ❌ clonefunction
+  ❌ crypt.generatekey
+  ❌ delfile
+  ❌ debug.getupvalue
+  ❌ filesystem.readfile
+  ❌ hookmetamethod
+  ⏺️ crypt.verify
+  ⏺️ debug.getconstant
 
-✅ Passed: 125
-❌ Not Passed: 35
-⏺️ Unknown: 20
+────────────────────────────────────────
+🕒 Took: TimeItTook
+📊 Final Score: Score%
+Passed: 12 | Failed: 6 | Unknown: 2
+💉 Executor: ExampleExecutor
 
-Total Tests: 180
-Score: 69.44%
-
---------------------------------
-No spoof, just proof.
---------------------------------
+────────────────────────────────────────
+eUNC. *No spoof, just proof.*
 ```
 
 *Example output only. Values are illustrative.*
