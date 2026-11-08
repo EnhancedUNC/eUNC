@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/EnhancedUNC/eUNC/assets/EUNC_Full.jpg" alt="eUNC - No spoof, just proof." width="600">
+  <img src="https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/assets/EUNC_Full.jpg" alt="eUNC-Banner" width="600">
 </p>
 
 <p align="center">
