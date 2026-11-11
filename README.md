@@ -20,7 +20,7 @@
 
 ## About
 
-**eUNC (Enhanced UNC)** is an open-source Roblox executor capability benchmark designed to test, verify, and report executor functionality.
+**eUNC (Enhanced UNC)** is a lightweight and an open-source Roblox executor capability benchmark designed to test, verify, and report executor functionality.
 
 Rather than simply checking whether an API exists, eUNC aims to verify whether individual functions behave as expected through dedicated functional tests.
 
@@ -71,7 +71,7 @@ Planned testing categories include:
 
 ```text
 ███████╗██╗   ██╗███╗   ██╗ ██████╗
-██╔════╝██║   ██║████╗  ██║██╔════╝
+██╔════ ██║   ██║████╗  ██║██╔════╝
 █████╗  ██║   ██║██╔██╗ ██║██║     
 ██╔══╝  ██║   ██║██║╚██╗██║██║     
 ███████╗╚██████╔╝██║ ╚████║╚██████╗
@@ -102,7 +102,7 @@ Planned testing categories include:
   ⏺️ debug.getconstant
 
 ────────────────────────────────────────
-🕒 Took: TimeItTook
+🕒 Took: 0.44s
 📊 Final Score: Score%
 Passed: 12 | Failed: 6 | Unknown: 2
 💉 Executor: ExampleExecutor
@@ -115,7 +115,7 @@ eUNC. *No spoof, just proof.*
 
 ## Development
 
-eUNC is currently under development. Test coverage, scoring, and implementation details may change as the project evolves.
+eUNC is currently under development. Test coverage, scoring, and implementation details may change as the project evolves.Our planned functions checks is 193 but right now we have 39.
 
 ## License
 
