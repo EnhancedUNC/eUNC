@@ -1,0 +1,38 @@
+# Benchmark output
+results/
+*.log
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+*~
+
+# Lua compiler output
+luac.out
+*.luac
+
+# Archives
+*.zip
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# GitHub tooling
+coverage/
