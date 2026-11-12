@@ -1,9 +1,9 @@
 local Results = {}
 
 local STATUS_EMOJIS = {
-    pass = "",
-    not_passed = "",
-    unknown = ""
+    pass = "✅",
+    not_passed = "❌",
+    unknown = "⏺️"
 }
 
 local SEPARATOR = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -28,7 +28,7 @@ end
 function Results.printTest(result)
     result = result or {}
 
-    local emoji = STATUS_EMOJIS[result.status] or ""
+    local emoji = STATUS_EMOJIS[result.status] or "⏺️"
     local name = tostring(result.name or "Unnamed test")
 
     printLine(emoji .. " " .. name)
@@ -50,7 +50,7 @@ function Results.printReport(report)
     printLine(SEPARATOR)
     printLine("")
 
-    printLine(" Executor: " .. tostring(executor.name or "Unknown"))
+    printLine("💉 Executor: " .. tostring(executor.name or "Unknown"))
     printLine("⌛ Took: " .. duration)
     printLine(string.format(
         "📊 Passed: %d | Failed: %d | Unknown: %d",
