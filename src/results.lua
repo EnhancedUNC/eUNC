@@ -1,11 +1,11 @@
 local Results = {}
 
-local PREFIX = "[eUNC]"
+local PREFIX = ""
 
-local STATUS_LABELS = {
-    pass = "PASS",
-    not_passed = "NOT PASSED",
-    unknown = "UNKNOWN"
+local STATUS_EMOJIS = {
+    pass = "",
+    not_passed = "",
+    unknown = ""
 }
 
 local function printLine(message)
@@ -26,14 +26,10 @@ function Results.printExecutor(information)
 end
 
 function Results.printTest(result)
-    local label = STATUS_LABELS[result.status] or "UNKNOWN"
+    local emoji = STATUS_EMOJIS[result.status] or ""
     local name = tostring(result.name or "Unnamed test")
 
-    printLine(string.format("[%s] %s", label, name))
-
-    if result.detail ~= nil and result.detail ~= "" then
-        printLine("  " .. tostring(result.detail))
-    end
+    printLine(emoji .. " " .. name)
 end
 
 function Results.printReport(report)
@@ -51,11 +47,11 @@ function Results.printReport(report)
 end
 
 function Results.printError(message)
-    printLine("ERROR: " .. tostring(message))
+    printLine(" ERROR: " .. tostring(message))
 end
 
 function Results.printWarning(message)
-    printLine("WARNING: " .. tostring(message))
+    printLine(" WARNING: " .. tostring(message))
 end
 
 return Results
