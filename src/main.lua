@@ -2,11 +2,12 @@ local ENV = (type(getgenv) == "function" and getgenv()) or _G
 local CONFIG = type(ENV.eUNCDebug) == "table" and ENV.eUNCDebug or {}
 local BASE_URL = "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
-local LOGO = [[   ________  ________   _______   _______
-  /        \/    /   \\//   /   \\//       \\
- /         /         //        //        /
-/        _/        //         /       --/
-/________/\_______//\__/_____ /\________/]]
+local LOGO = [[
+   ________  ________   _______   _______ 
+  ╱        ╲╱    ╱   ╲╱╱   ╱   ╲╱╱       ╲
+ ╱         ╱         ╱╱        ╱╱        ╱
+╱        _╱        ╱╱         ╱       --╱ 
+╲________╱╲_______╱╱╲__╱_____╱╲________╱  ]]
 
 local function fetchModule(path)
     if not game or type(game.HttpGet) ~= "function" then error("game:HttpGet unavailable") end
