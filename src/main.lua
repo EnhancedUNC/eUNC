@@ -2,7 +2,7 @@ local ENV = (type(getgenv) == "function" and getgenv()) or _G
 local CONFIG = type(ENV.eUNCDebug) == "table" and ENV.eUNCDebug or {}
 local BASE_URL = "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
-local LOGO = [[
+local LOGO = [[ 
    ________  ________   _______   _______ 
   /        \/    /   \//   /   \//       \
  /         /         //        //        /
