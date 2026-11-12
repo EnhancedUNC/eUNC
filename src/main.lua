@@ -2,14 +2,6 @@ local ENV = (type(getgenv) == "function" and getgenv()) or _G
 local CONFIG = type(ENV.eUNCDebug) == "table" and ENV.eUNCDebug or {}
 local BASE_URL = "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
-local LOGO = [[
-   ________  ________   _______   _______
-  /        \/    /   \//   /   \//       \
- /         /         //        //        /
-/        _/        //         /       --/
-/________/\_______//\__/_____/\________/
-]]
-
 local function fetchModule(path)
     if not game or type(game.HttpGet) ~= "function" then
         error("game:HttpGet unavailable")
@@ -62,7 +54,8 @@ local function exportReport(report, executor)
         unknown = report.unknown,
         score = report.score,
         duration = report.duration,
-        results = report.results
+        results = report.results,
+        categories = report.categories
     }
 
     local encode = ENV.HttpService or game:GetService("HttpService")
@@ -88,6 +81,21 @@ local function exportReport(report, executor)
 
     print("💾 Saved eUNC-results.json")
     return true
+end
+
+local function sortResults(results)
+    local STATUS_ORDER = {
+        pass = 1,
+        not_passed = 2,
+        unknown = 3
+    }
+
+    table.sort(results, function(a, b)
+        local orderA = STATUS_ORDER[a.status] or 3
+        local orderB = STATUS_ORDER[b.status] or 3
+
+        return orderA < orderB
+    end)
 end
 
 local function start()
@@ -120,6 +128,8 @@ local function start()
     local report = Runner.run(tests, CONFIG)
 
     report.executor = identity
+
+    sortResults(report.results)
 
     for _, item in ipairs(report.results) do
         if CONFIG.printindividualresults ~= false then
