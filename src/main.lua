@@ -4,10 +4,10 @@ local BASE_URL = "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
 local LOGO = [[
    ________  ________   _______   _______ 
-  ╱        ╲╱    ╱   ╲╱╱   ╱   ╲╱╱       ╲
- ╱         ╱         ╱╱        ╱╱        ╱
-╱        _╱        ╱╱         ╱       --╱ 
-╲________╱╲_______╱╱╲__╱_____╱╲________╱  ]]
+  /        \/    /   \//   /   \//       \
+ /         /         //        //        /
+/        _/        //         /       --/ 
+\________/\_______//\__/_____/\________/  ]]
 
 local function fetchModule(path)
     if not game or type(game.HttpGet) ~= "function" then error("game:HttpGet unavailable") end
