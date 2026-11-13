@@ -1,6 +1,11 @@
 local ENV = (type(getgenv) == "function" and getgenv()) or _G
-local CONFIG = type(ENV.eUNCDebug) == "table" and ENV.eUNCDebug or {}
-local BASE_URL = "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
+
+local CONFIG = type(ENV.eUNCDebug) == "table"
+    and ENV.eUNCDebug
+    or {}
+
+local BASE_URL =
+    "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
 local function fetchModule(path)
     if not game or type(game.HttpGet) ~= "function" then
@@ -52,20 +57,22 @@ local function exportReport(report, executor)
         passed = report.passed,
         notPassed = report.notPassed,
         unknown = report.unknown,
+        skipped = report.skipped,
         score = report.score,
         duration = report.duration,
         results = report.results,
-        categories = report.categories
+        categories = report.categories,
+        subtestTotals = report.subtestTotals
     }
 
-    local encode = ENV.HttpService or game:GetService("HttpService")
+    local HttpService = ENV.HttpService or game:GetService("HttpService")
 
-    if not encode or type(encode.JSONEncode) ~= "function" then
+    if not HttpService or type(HttpService.JSONEncode) ~= "function" then
         warn("⚠️ JSON encoder unavailable; report not saved")
         return false
     end
 
-    local ok, json = pcall(encode.JSONEncode, encode, payload)
+    local ok, json = pcall(HttpService.JSONEncode, HttpService, payload)
 
     if not ok then
         warn("❌ JSON encoding failed: " .. tostring(json))
@@ -87,7 +94,8 @@ local function sortResults(results)
     local STATUS_ORDER = {
         pass = 1,
         not_passed = 2,
-        unknown = 3
+        unknown = 3,
+        skipped = 4
     }
 
     table.sort(results, function(a, b)
@@ -112,7 +120,9 @@ local function start()
 
     for _, path in ipairs(manifest) do
         local module = fetchModule("src/tests/" .. path)
-        local run = type(module) == "table" and (module.Run or module.run)
+
+        local run = type(module) == "table"
+            and (module.Run or module.run)
 
         if type(run) ~= "function" then
             error("No Run function in " .. path)
@@ -127,13 +137,13 @@ local function start()
 
     local report = Runner.run(tests, CONFIG)
 
-    report.executor = identity
+    report.executor = identity.name .. " " .. identity.version
 
     sortResults(report.results)
 
-    for _, item in ipairs(report.results) do
+    for _, result in ipairs(report.results) do
         if CONFIG.printindividualresults ~= false then
-            Results.printTest(item)
+            Results.printTest(result, CONFIG)
         end
     end
 
