@@ -1,77 +1,100 @@
 local Results = {}
 
-local STATUS_EMOJIS = {
+local PREFIX = "eUNC"
+
+local STATUS_SYMBOLS = {
     pass = "✅",
     not_passed = "❌",
-    unknown = "⏺️"
+    unknown = "⏺️",
+    skipped = "🔳"
 }
 
 local SEPARATOR = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 local function printLine(message)
-    print(message or "")
+    print(message)
+end
+
+local function getSymbol(status)
+    return STATUS_SYMBOLS[status] or "⏺️"
+end
+
+local function formatPercentage(value)
+    return string.format("%.2f%%", value or 0)
 end
 
 function Results.printBanner()
-    printLine("   ________  ________   _______   _______ ")
-    printLine("  /        \\/    /   \\//   /   \\//       \\")
-    printLine(" /         /         //        //        /")
-    printLine("/        _/        //         /       --/ ")
-    printLine("\\________/\\_______//\\__/_____/\\________/")
+    printLine("    ________  ________   _______   _______")
+    printLine("   /        \\/    /   \\//   /   \\//       \\")
+    printLine("  /         /         //        //        /")
+    printLine(" /        _/        //         /       --/")
+    printLine(" \\________/\\_______//\\__/_____/ \\________/")
     printLine("")
-    printLine("\tEnhanced UNC Benchmark")
-    printLine("\t No Spoof, just proof")
+    printLine(" Enhanced UNC Benchmark")
+    printLine("  No Spoof, just proof")
     printLine(SEPARATOR)
-    printLine("")
 end
 
-function Results.printTest(result)
-    result = result or {}
+function Results.printTest(result, settings)
+    settings = settings or {}
 
-    local emoji = STATUS_EMOJIS[result.status] or "⏺️"
-    local name = tostring(result.name or "Unnamed test")
+    printLine(string.format(
+        "%s %s",
+        getSymbol(result.status),
+        result.name
+    ))
 
-    printLine(emoji .. " " .. name)
+    if settings.printsubtests == true then
+        for _, subtest in ipairs(result.subtests or {}) do
+            printLine(string.format(
+                "  %s %s",
+                getSymbol(subtest.status),
+                subtest.name
+            ))
+
+            if settings.printsubtestdetails == true
+                and subtest.detail
+            then
+                printLine("    ↳ " .. tostring(subtest.detail))
+            end
+        end
+    end
+
+    if settings.printtestdetails == true and result.detail then
+        printLine("  ↳ " .. tostring(result.detail))
+    end
 end
 
 function Results.printReport(report)
-    report = report or {}
-
-    local passed = tonumber(report.passed) or 0
-    local failed = tonumber(report.notPassed or report.failed) or 0
-    local unknown = tonumber(report.unknown) or 0
-    local total = tonumber(report.total) or (passed + failed + unknown)
-    local duration = tostring(report.duration or "0.00s")
-    local score = tonumber(report.score) or 0
-    local executor = report.executor or {}
-    local eid = tostring(report.eID or report.eid or "Unknown")
-
-    printLine("")
     printLine(SEPARATOR)
-    printLine("")
+    printLine("💉 Executor: " .. tostring(report.executor or "Unknown"))
+    printLine(string.format("⌛ Took: %.2fs", report.duration or 0))
 
-    printLine("💉 Executor: " .. tostring(executor.name or "Unknown"))
-    printLine("⌛ Took: " .. duration)
     printLine(string.format(
-        "📊 Passed: %d | Failed: %d | Unknown: %d",
-        passed,
-        failed,
-        unknown
+        "📊 Passed: %d | Failed: %d | Unknown: %d | Skipped: %d",
+        report.passed or 0,
+        report.notPassed or 0,
+        report.unknown or 0,
+        report.skipped or 0
     ))
-    printLine(string.format("📄 Score: %d%%", score))
 
-    printLine("")
+    printLine("📄 Score: " .. formatPercentage(report.score))
     printLine(SEPARATOR)
-    printLine("")
-    printLine("eID: " .. eid)
-end
 
-function Results.printError(message)
-    printLine("❌ " .. tostring(message))
-end
+    if report.subtestTotals then
+        local totals = report.subtestTotals
 
-function Results.printWarning(message)
-    printLine("⚠️ " .. tostring(message))
+        printLine(string.format(
+            "🧪 Subtests: %d | ✅ %d | ❌ %d | ⏺️ %d | 🔳 %d",
+            totals.total or 0,
+            totals.passed or 0,
+            totals.notPassed or 0,
+            totals.unknown or 0,
+            totals.skipped or 0
+        ))
+
+        printLine(SEPARATOR)
+    end
 end
 
 return Results
