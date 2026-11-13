@@ -70,45 +70,45 @@ Planned testing categories include:
 ## Example Output
 
 ```text
-███████╗██╗   ██╗███╗   ██╗ ██████╗
-██╔════ ██║   ██║████╗  ██║██╔════╝
-█████╗  ██║   ██║██╔██╗ ██║██║     
-██╔══╝  ██║   ██║██║╚██╗██║██║     
-███████╗╚██████╔╝██║ ╚████║╚██████╗
-╚══════╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝
+   ________  ________   _______   _______ 
+  /        \/    /   \//   /   \//       \
+ /         /         //        //        /
+/        _/        //         /       --/ 
+\________/\_______//\__/_____/\________/
 
-         Enhanced UNC
-      "No spoof, just proof."
+	Enhanced UNC Benchmark
+	 No Spoof, just proof
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-────────────────────────────────────────
+✅ Function1
+✅ Function2
+✅ Function3
+✅ Function4
+✅ Function5
+✅ Function6
+✅ Function7
+✅ Function8
+❌ Function9
+❌ Function10
+❌ Function11
+❌ Function12
+❌ Function13
+⏺️ Function14
+⏺️ Function15
+⏺️ Function16
+⏺️ Function17
+⏺️ Function18
 
-  ✅ crypt.base64.decode
-  ✅ crypt.base64.encode
-  ✅ crypt.hash
-  ✅ debug.getinfo
-  ✅ getrawmetatable
-  ✅ hookfunction
-  ✅ newcclosure
-  ✅ readfile
-  ✅ setreadonly
-  ✅ writefile
-  ❌ clonefunction
-  ❌ crypt.generatekey
-  ❌ delfile
-  ❌ debug.getupvalue
-  ❌ filesystem.readfile
-  ❌ hookmetamethod
-  ⏺️ crypt.verify
-  ⏺️ debug.getconstant
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-────────────────────────────────────────
-🕒 Took: 0.44s
-📊 Final Score: Score%
-Passed: 12 | Failed: 6 | Unknown: 2
-💉 Executor: ExampleExecutor
+💉 Executor: ExecutorName
+⌛ Took: %TimeItTook%
+📊 Passed: 8 | Failed: 5 | Unknown: 5
+📄 Score: %Percentage%
 
-────────────────────────────────────────
-eUNC. *No spoof, just proof.*
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+eID: XXXX-XXXX-XXXX-X
 ```
 
 *Example output only. Values are illustrative.*
