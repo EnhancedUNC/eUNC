@@ -12,8 +12,24 @@ local function getEnvironment()
     return _G
 end
 
+local function getGlobal(environment, key)
+    if environment then
+        local value = environment[key]
+
+        if value ~= nil then
+            return value
+        end
+    end
+
+    if _G then
+        return _G[key]
+    end
+
+    return nil
+end
+
 local function readString(environment, key)
-    local value = environment[key]
+    local value = getGlobal(environment, key)
 
     if type(value) == "string" and value ~= "" then
         return value
@@ -23,7 +39,14 @@ local function readString(environment, key)
 end
 
 local function readFunction(environment, key)
-    return type(environment[key]) == "function"
+    local value = getGlobal(environment, key)
+
+    return type(value) == "function"
+        or (
+            (type(value) == "table" or type(value) == "userdata")
+            and type(getmetatable(value)) == "table"
+            and type(getmetatable(value).__call) == "function"
+        )
 end
 
 function Executor.identify()
@@ -42,7 +65,7 @@ function Executor.identify()
     }
 
     for _, functionName in ipairs(nameFunctions) do
-        local callback = environment[functionName]
+        local callback = getGlobal(environment, functionName)
 
         if type(callback) == "function" then
             local ok, name, version = pcall(callback)
@@ -53,6 +76,7 @@ function Executor.identify()
                     and version ~= ""
                     and version
                     or "Unknown"
+
                 information.identified = true
                 break
             end
@@ -101,8 +125,7 @@ function Executor.identify()
         "isexecutorclosure",
         "islclosure",
         "iscclosure",
-        "gethui",
-        "Drawing"
+        "gethui"
     }
 
     for _, capability in ipairs(capabilityNames) do
@@ -111,7 +134,7 @@ function Executor.identify()
     end
 
     information.capabilities.Drawing =
-        environment.Drawing ~= nil
+        getGlobal(environment, "Drawing") ~= nil
 
     return information
 end
