@@ -1,5 +1,12 @@
 local Runner = {}
 
+local VALID_STATUSES = {
+    pass = true,
+    not_passed = true,
+    unknown = true,
+    skipped = true
+}
+
 local function classify(value)
     if value == true then
         return "pass"
@@ -10,8 +17,25 @@ local function classify(value)
     return "unknown"
 end
 
+local function normalizeResult(value, detail)
+    if type(value) == "table" then
+        local status = value.status or "unknown"
+
+        return {
+            status = VALID_STATUSES[status] and status or "unknown",
+            detail = value.detail or detail
+        }
+    end
+
+    return {
+        status = classify(value),
+        detail = detail
+    }
+end
+
 local function executeSubtest(subtest)
     local started = os.clock()
+
     local result = {
         name = subtest.name or "Unnamed subtest",
         status = "unknown",
@@ -24,7 +48,7 @@ local function executeSubtest(subtest)
         return result
     end
 
-    local ok, value = pcall(subtest.run)
+    local ok, value, detail = pcall(subtest.run)
 
     result.duration = os.clock() - started
 
@@ -33,20 +57,10 @@ local function executeSubtest(subtest)
         return result
     end
 
-    if type(value) == "table" then
-        result.status = value.status or "unknown"
-        result.detail = value.detail
-    else
-        result.status = classify(value)
-    end
+    local normalized = normalizeResult(value, detail)
 
-    if result.status ~= "pass"
-        and result.status ~= "not_passed"
-        and result.status ~= "unknown"
-        and result.status ~= "skipped"
-    then
-        result.status = "unknown"
-    end
+    result.status = normalized.status
+    result.detail = normalized.detail
 
     return result
 end
@@ -108,7 +122,7 @@ local function executeTest(testCase)
         return result
     end
 
-    local ok, value = pcall(testCase.run)
+    local ok, value, detail = pcall(testCase.run)
 
     if not ok then
         result.detail = tostring(value)
@@ -134,20 +148,12 @@ local function executeTest(testCase)
             skipped = skipped
         }
 
-        result.detail = value.detail
-    elseif type(value) == "table" then
-        result.status = value.status or "unknown"
-        result.detail = value.detail
+        result.detail = value.detail or detail
     else
-        result.status = classify(value)
-    end
+        local normalized = normalizeResult(value, detail)
 
-    if result.status ~= "pass"
-        and result.status ~= "not_passed"
-        and result.status ~= "unknown"
-        and result.status ~= "skipped"
-    then
-        result.status = "unknown"
+        result.status = normalized.status
+        result.detail = normalized.detail
     end
 
     result.duration = os.clock() - started
@@ -200,6 +206,7 @@ function Runner.run(tests, settings)
     settings = settings or {}
 
     local started = os.clock()
+
     local report = {
         total = 0,
         passed = 0,
