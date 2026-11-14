@@ -7,6 +7,15 @@ local CONFIG = type(ENV.eUNCDebug) == "table"
 local BASE_URL =
     "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
+local SEPARATOR = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+local STATUS_SYMBOLS = {
+    pass = "✅",
+    not_passed = "❌",
+    unknown = "⏺️",
+    skipped = "🔳"
+}
+
 local function exposeGlobal(name, value)
     ENV[name] = value
     _G[name] = value
@@ -42,7 +51,99 @@ local function fetchModule(path)
     return result
 end
 
-local function exportReport(report, executor)
+local function getSymbol(status)
+    return STATUS_SYMBOLS[status] or "⏺️"
+end
+
+local function formatPercentage(value)
+    return string.format("%.2f%%", value or 0)
+end
+
+local function buildTextReport(report, settings)
+    settings = settings or {}
+
+    local lines = {}
+
+    local function addLine(message)
+        lines[#lines + 1] = tostring(message or "")
+    end
+
+    addLine("    ________  ________   _______   _______")
+    addLine("   /        \\/    /   \\//   /   \\//       \\")
+    addLine("  /         /         //        //        /")
+    addLine(" /        _/        //         /       --/")
+    addLine(" \\________/\\_______//\\__/_____/ \\________/")
+    addLine("")
+    addLine(" Enhanced UNC Benchmark")
+    addLine("  No Spoof, just proof")
+    addLine(SEPARATOR)
+    addLine("")
+
+    if settings.printindividualresults ~= false then
+        for _, result in ipairs(report.results or {}) do
+            addLine(string.format(
+                "%s %s",
+                getSymbol(result.status),
+                result.name
+            ))
+
+            if settings.printsubtests == true then
+                for _, subtest in ipairs(result.subtests or {}) do
+                    addLine(string.format(
+                        "  %s %s",
+                        getSymbol(subtest.status),
+                        subtest.name
+                    ))
+
+                    if settings.printsubtestdetails == true
+                        and subtest.detail
+                    then
+                        addLine("    ↳ " .. tostring(subtest.detail))
+                    end
+                end
+            end
+
+            if settings.printtestdetails == true and result.detail then
+                addLine("  ↳ " .. tostring(result.detail))
+            end
+        end
+    end
+
+    addLine("")
+    addLine(SEPARATOR)
+    addLine("💉 Executor: " .. tostring(report.executor or "Unknown"))
+    addLine(string.format("⌛ Took: %.2fs", report.duration or 0))
+
+    addLine(string.format(
+        "📊 Passed: %d | Failed: %d | Unknown: %d | Skipped: %d",
+        report.passed or 0,
+        report.notPassed or 0,
+        report.unknown or 0,
+        report.skipped or 0
+    ))
+
+    addLine("📄 Score: " .. formatPercentage(report.score))
+    addLine(SEPARATOR)
+
+    if report.subtestTotals then
+        local totals = report.subtestTotals
+
+        addLine(string.format(
+            "🧪 Subtests: %d | ✅ %d | ❌ %d | ⏺️ %d | 🔳 %d",
+            totals.total or 0,
+            totals.passed or 0,
+            totals.notPassed or 0,
+            totals.unknown or 0,
+            totals.skipped or 0
+        ))
+
+        addLine(SEPARATOR)
+    end
+
+    return table.concat(lines, "\n")
+end
+
+local function exportReport(report)
     if CONFIG.savetodevice ~= true then
         return false
     end
@@ -54,44 +155,20 @@ local function exportReport(report, executor)
         return false
     end
 
-    local payload = {
-        benchmark = "eUNC",
-        version = "1.0.0",
-        executor = executor,
-        total = report.total,
-        passed = report.passed,
-        notPassed = report.notPassed,
-        unknown = report.unknown,
-        skipped = report.skipped,
-        score = report.score,
-        duration = report.duration,
-        results = report.results,
-        categories = report.categories,
-        subtestTotals = report.subtestTotals
-    }
+    local content = buildTextReport(report, CONFIG)
 
-    local HttpService = ENV.HttpService or game:GetService("HttpService")
-
-    if not HttpService or type(HttpService.JSONEncode) ~= "function" then
-        warn("⚠️ JSON encoder unavailable; report not saved")
-        return false
-    end
-
-    local ok, json = pcall(HttpService.JSONEncode, HttpService, payload)
-
-    if not ok then
-        warn("❌ JSON encoding failed: " .. tostring(json))
-        return false
-    end
-
-    local saved, err = pcall(write, "eUNC-results.json", json)
+    local saved, err = pcall(
+        write,
+        "eUNC-results.txt",
+        content
+    )
 
     if not saved then
         warn("❌ Report save failed: " .. tostring(err))
         return false
     end
 
-    print("💾 Saved eUNC-results.json")
+    print("💾 Saved eUNC-results.txt")
     return true
 end
 
@@ -156,6 +233,7 @@ local function start()
                     return nil, "Module loading failed: " .. tostring(module)
                 end
             }
+
             continue
         end
 
@@ -172,6 +250,7 @@ local function start()
                     return nil, "Missing Run function"
                 end
             }
+
             continue
         end
 
@@ -206,7 +285,7 @@ local function start()
 
     exposeGlobal("eUNCResults", report)
 
-    exportReport(report, report.executor)
+    exportReport(report)
 
     return report
 end
