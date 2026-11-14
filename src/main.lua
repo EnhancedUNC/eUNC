@@ -7,6 +7,11 @@ local CONFIG = type(ENV.eUNCDebug) == "table"
 local BASE_URL =
     "https://raw.githubusercontent.com/EnhancedUNC/eUNC/main/"
 
+local function exposeGlobal(name, value)
+    ENV[name] = value
+    _G[name] = value
+end
+
 local function fetchModule(path)
     if not game or type(game.HttpGet) ~= "function" then
         error("game:HttpGet unavailable")
@@ -31,7 +36,7 @@ local function fetchModule(path)
     local ok, result = pcall(chunk)
 
     if not ok then
-        error(result)
+        error(path .. ": " .. tostring(result))
     end
 
     return result
@@ -115,17 +120,59 @@ local function start()
 
     local identity = Executor.identify()
 
+    if type(identity) ~= "table" then
+        error("Executor identification returned an invalid result")
+    end
+
+    local Util = fetchModule("src/tests/_util.lua")
+
+    if type(Util) ~= "table" then
+        error("Utility module returned an invalid result")
+    end
+
+    exposeGlobal("eUNCUtil", Util)
+
     local manifest = fetchModule("src/tests/manifest.lua")
+
+    if type(manifest) ~= "table" then
+        error("Test manifest returned an invalid result")
+    end
+
     local tests = {}
 
     for _, path in ipairs(manifest) do
-        local module = fetchModule("src/tests/" .. path)
+        local ok, module = pcall(
+            fetchModule,
+            "src/tests/" .. path
+        )
+
+        if not ok then
+            warn("⚠️ Failed to load " .. path .. ": " .. tostring(module))
+
+            tests[#tests + 1] = {
+                name = path:gsub("%.lua$", ""):gsub("^.-/", ""),
+                category = path:match("^([^/]+)/"),
+                run = function()
+                    return nil, "Module loading failed: " .. tostring(module)
+                end
+            }
+            continue
+        end
 
         local run = type(module) == "table"
             and (module.Run or module.run)
 
         if type(run) ~= "function" then
-            error("No Run function in " .. path)
+            warn("⚠️ No Run function in " .. path)
+
+            tests[#tests + 1] = {
+                name = path:gsub("%.lua$", ""):gsub("^.-/", ""),
+                category = path:match("^([^/]+)/"),
+                run = function()
+                    return nil, "Missing Run function"
+                end
+            }
+            continue
         end
 
         tests[#tests + 1] = {
@@ -135,26 +182,31 @@ local function start()
         }
     end
 
+    print("🧪 Loaded " .. #tests .. " test modules")
+
     local report = Runner.run(tests, CONFIG)
 
-    report.executor = identity.name .. " " .. identity.version
+    report.executor = tostring(identity.name or "Unknown")
+        .. " "
+        .. tostring(identity.version or "")
 
     sortResults(report.results)
 
     for _, result in ipairs(report.results) do
         if CONFIG.printindividualresults ~= false then
-            Results.printTest(result, CONFIG)
+            Results.printTest(result, {
+                printsubtests = CONFIG.printsubtests,
+                printsubtestdetails = CONFIG.printsubtestdetails,
+                printtestdetails = CONFIG.printtestdetails
+            })
         end
     end
 
     Results.printReport(report)
 
-    ENV.eUNCResults = report
+    exposeGlobal("eUNCResults", report)
 
-    exportReport(
-        report,
-        identity.name .. " " .. identity.version
-    )
+    exportReport(report, report.executor)
 
     return report
 end
