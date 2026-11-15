@@ -17,7 +17,7 @@ return {
     "closures/replaceclosure.lua",
     "closures/restorefunction.lua",
     "closures/setnamecallmethod.lua",
-    "closures/trampoline_call.lua",
+    "closures/trampolinecall.lua",
 
     "crypt/aes_decrypt.lua",
     "crypt/aes_encrypt.lua",
