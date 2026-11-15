@@ -41,12 +41,20 @@ end
 local function readFunction(environment, key)
     local value = getGlobal(environment, key)
 
-    return type(value) == "function"
-        or (
-            (type(value) == "table" or type(value) == "userdata")
-            and type(getmetatable(value)) == "table"
-            and type(getmetatable(value).__call) == "function"
-        )
+    if type(value) == "function" then
+        return true
+    end
+
+    if type(value) ~= "table" and type(value) ~= "userdata" then
+        return false
+    end
+
+    local ok, metatable = pcall(getmetatable, value)
+
+    return ok
+        and type(metatable) == "table"
+        and type(metatable.__call) == "function"
+        or false
 end
 
 function Executor.identify()
@@ -108,6 +116,7 @@ function Executor.identify()
         "hookfunction",
         "hookmetamethod",
         "newcclosure",
+        "trampoline_call",
         "getgc",
         "getreg",
         "getupvalues",
