@@ -17,6 +17,8 @@ return {
     "closures/replaceclosure.lua",
     "closures/restorefunction.lua",
     "closures/setnamecallmethod.lua",
+    "closures/trampoline_call.lua",
+
     "crypt/aes_decrypt.lua",
     "crypt/aes_encrypt.lua",
     "crypt/base64_decode.lua",
@@ -39,6 +41,7 @@ return {
     "crypt/sign.lua",
     "crypt/verify.lua",
     "crypt/verify_signature.lua",
+
     "debug/getconnections.lua",
     "debug/getconstant.lua",
     "debug/getconstantcount.lua",
@@ -65,6 +68,7 @@ return {
     "debug/setupvalue.lua",
     "debug/setupvalues.lua",
     "debug/traceback.lua",
+
     "drawing/drawing_circle.lua",
     "drawing/drawing_clear.lua",
     "drawing/drawing_color.lua",
@@ -85,6 +89,7 @@ return {
     "drawing/drawing_transparency.lua",
     "drawing/drawing_triangle.lua",
     "drawing/drawing_visible.lua",
+
     "environment/getexecutorname.lua",
     "environment/getexecutorversion.lua",
     "environment/getfenv.lua",
@@ -101,6 +106,7 @@ return {
     "environment/getsenv.lua",
     "environment/identifyexecutor.lua",
     "environment/setfenv.lua",
+
     "filesystem/appendfile.lua",
     "filesystem/delfile.lua",
     "filesystem/delfolder.lua",
@@ -119,6 +125,7 @@ return {
     "filesystem/roundtrip.lua",
     "filesystem/setfilecontents.lua",
     "filesystem/writefile.lua",
+
     "http/getrequest.lua",
     "http/http_request.lua",
     "http/httpget.lua",
@@ -131,6 +138,7 @@ return {
     "http/request_headers.lua",
     "http/request_response.lua",
     "http/request_status.lua",
+
     "identification/getclientid.lua",
     "identification/getdeviceid.lua",
     "identification/getexecutorname.lua",
@@ -138,6 +146,7 @@ return {
     "identification/gethwid.lua",
     "identification/getscriptname.lua",
     "identification/identifyexecutor.lua",
+
     "instances/cloneref.lua",
     "instances/compareinstances.lua",
     "instances/getchildren.lua",
@@ -154,6 +163,7 @@ return {
     "instances/getroot.lua",
     "instances/isnetworkowner.lua",
     "instances/sethiddenproperty.lua",
+
     "metatables/getnamecallmethod.lua",
     "metatables/getrawmetatable.lua",
     "metatables/getrawmetatable_protection.lua",
@@ -171,6 +181,7 @@ return {
     "metatables/setreadonly.lua",
     "metatables/setreadonly_false.lua",
     "metatables/setreadonly_true.lua",
+
     "scripts/getcallingscript.lua",
     "scripts/getloadedmodules.lua",
     "scripts/getrunningscripts.lua",
@@ -182,6 +193,7 @@ return {
     "scripts/getscripts.lua",
     "scripts/getscriptthread.lua",
     "scripts/loadstring.lua",
+
     "websocket/websocket_binary.lua",
     "websocket/websocket_close.lua",
     "websocket/websocket_connect.lua",
